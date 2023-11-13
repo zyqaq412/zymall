@@ -1,19 +1,15 @@
 package com.hzy.zymall.member.controller;
 
-import java.util.Arrays;
-import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.hzy.zymall.member.entity.MemberEntity;
-import com.hzy.zymall.member.service.MemberService;
 import com.hzy.common.utils.PageUtils;
 import com.hzy.common.utils.R;
+import com.hzy.zymall.member.entity.MemberEntity;
+import com.hzy.zymall.member.feign.CouponFeignService;
+import com.hzy.zymall.member.service.MemberService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Arrays;
+import java.util.Map;
 
 
 
@@ -29,6 +25,17 @@ import com.hzy.common.utils.R;
 public class MemberController {
     @Autowired
     private MemberService memberService;
+    @Autowired
+    private CouponFeignService couponFeignService;
+
+    @GetMapping("/coupons")
+    public R test(){
+        MemberEntity zs = new MemberEntity();
+        zs.setNickname("张三");
+        R coupons = couponFeignService.memberCoupon();
+        return R.ok().put("member",zs).put("coupons",coupons);
+
+    }
 
     /**
      * 列表
