@@ -14,6 +14,7 @@
         <module>zymall-ware</module>
         <module>zymall-member</module>
         <module>zymall-product</module>
+        <module>zymall-common</module>
     </modules>
 
 </project>
