@@ -1,8 +1,9 @@
+
 spring:
   datasource:
     username: root
     password: 120125hzy.
-    url: jdbc:mysql://localhost:3306/zymall-pms?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://localhost:3306/zymall-wms?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
@@ -10,4 +11,4 @@ mybatis-plus:
     db-config:
       id-type: auto
 server:
-  port: 10000
+  port: 11000
