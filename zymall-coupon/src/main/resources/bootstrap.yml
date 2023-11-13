@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: zymall-coupon # 服务名称 有这个名称才能注册到注册中心
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.193.40:8848
+      config:
+        server-addr: 192.168.193.40:8848
+        file-extension: yml

@@ -5,6 +5,8 @@ import com.hzy.common.utils.R;
 import com.hzy.zymall.coupon.entity.CouponEntity;
 import com.hzy.zymall.coupon.service.CouponService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -19,11 +21,26 @@ import java.util.Map;
  * @email zxwyhzy@gmail.com
  * @date 2023-11-13 16:25:24
  */
+@RefreshScope // 刷新 动态获取配置文件
 @RestController
 @RequestMapping("coupon/coupon")
 public class CouponController {
     @Autowired
     private CouponService couponService;
+
+
+    @Value("${couponuser.name}")
+    private String name;
+    @Value("${couponuser.age}")
+    private String age;
+    /**
+     *  测试配置中心
+     * @return
+     */
+    @GetMapping("/test")
+    public R test(){
+        return R.ok().put("name",name).put("age",age);
+    }
 
     /**
      *  获取会员全部优惠价 测试用
