@@ -1,10 +1,16 @@
 
 spring:
+  application:
+    name: zymall-member # 服务名称 有这个名称才能注册到注册中心
   datasource:
     username: root
     password: 120125hzy.
     url: jdbc:mysql://localhost:3306/zymall-ums?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
     driver-class-name: com.mysql.cj.jdbc.Driver
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.193.40:8848
 mybatis-plus:
   mapper-locations: classpath:/mapper/**/*.xml
   global-config:
