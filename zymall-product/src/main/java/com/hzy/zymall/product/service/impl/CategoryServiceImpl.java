@@ -10,9 +10,9 @@ import com.hzy.zymall.product.entity.CategoryEntity;
 import com.hzy.zymall.product.service.CategoryService;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service("categoryService")
@@ -30,7 +30,18 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Override
     public List<CategoryEntity> listWithTree() {
-        // 1.查出所有分类
+        List<CategoryEntity> list = this.list();
+
+        // 使用Java流过滤出顶级分类
+        List<CategoryEntity> topLevelCategories = list.stream()
+                .filter(category -> category.getParentCid() == 0)
+                .collect(Collectors.toList());
+
+        // 构建树形结构
+        buildTree(list, topLevelCategories);
+
+
+/*        // 1.查出所有分类
         List<CategoryEntity> list = this.list();
         // 2.构建树形结构
         List<CategoryEntity> ans = new LinkedList<>();
@@ -41,12 +52,25 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
             }
         }
         // 2.2构建树形结构
-        buildTree(list,ans);
+        buildTree(list,ans);*/
 
-        return ans;
+        return topLevelCategories;
     }
-    private void buildTree(List<CategoryEntity> list,List<CategoryEntity> ans){
-        for (CategoryEntity category : ans){
+    private void buildTree(List<CategoryEntity> list,List<CategoryEntity> parentCategories){
+
+        for (CategoryEntity category : parentCategories) {
+            // 使用Java流过滤出当前分类的子分类
+            List<CategoryEntity> childCategories = list.stream()
+                    .filter(node -> node.getParentCid() == category.getCatId())
+                    .collect(Collectors.toList());
+
+            // 递归构建子树
+            buildTree(list, childCategories);
+
+            // 设置子分类
+            category.setChild(childCategories);
+        }
+/*        for (CategoryEntity category : ans){
             List<CategoryEntity> temp = new LinkedList<>();
             for (CategoryEntity node : list){
                 if (node.getParentCid() == category.getCatId()){
@@ -55,6 +79,6 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
             }
             buildTree(list,temp);
             category.setChild(temp);
-        }
+        }*/
     }
 }
