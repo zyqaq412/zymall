@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: zymall-gateway # 服务名称 有这个名称才能注册到注册中心
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.193.40:8848
+      config:
+        server-addr: 192.168.193.40:8848
+        file-extension: yml
+        namespace: gateway4248dfba-01b6-4443-8eab-cdcf3a18bf11
+server:
+  port: 12000
