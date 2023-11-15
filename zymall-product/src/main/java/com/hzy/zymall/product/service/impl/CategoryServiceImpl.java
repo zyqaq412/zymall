@@ -10,9 +10,9 @@ import com.hzy.zymall.product.entity.CategoryEntity;
 import com.hzy.zymall.product.service.CategoryService;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service("categoryService")
@@ -30,18 +30,26 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Override
     public List<CategoryEntity> listWithTree() {
-/*        List<CategoryEntity> list = this.list();
+        //1、查出所有分类
+        List<CategoryEntity> entities = baseMapper.selectList(null);
 
-        // 使用Java流过滤出顶级分类
-        List<CategoryEntity> topLevelCategories = list.stream()
-                .filter(category -> category.getParentCid() == 0)
-                .collect(Collectors.toList());
+        //2、组装成父子的树形结构
 
-        // 构建树形结构
-        buildTree(list, topLevelCategories);*/
+        //2.1）、找到所有的一级分类
+        List<CategoryEntity> level1Menus = entities.stream().filter(categoryEntity ->
+                categoryEntity.getParentCid() == 0
+        ).map((menu)->{
+            menu.setChildren(getChildrens(menu,entities));
+            return menu;
+        }).sorted((menu1,menu2)->{
+            return (menu1.getSort()==null?0:menu1.getSort()) - (menu2.getSort()==null?0:menu2.getSort());
+        }).collect(Collectors.toList());
 
 
-        // 1.查出所有分类
+
+
+        return level1Menus;
+/*        // 1.查出所有分类
         List<CategoryEntity> list = this.list();
         // 2.构建树形结构
         List<CategoryEntity> topLevelCategories = new LinkedList<>();
@@ -54,11 +62,27 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
         // 2.2构建树形结构
         buildTree(list,topLevelCategories);
 
-        return topLevelCategories;
+        return topLevelCategories;*/
     }
-    private void buildTree(List<CategoryEntity> list,List<CategoryEntity> parentCategories){
+    //递归查找所有菜单的子菜单
+    private List<CategoryEntity> getChildrens(CategoryEntity root,List<CategoryEntity> all){
 
-       /* for (CategoryEntity category : parentCategories) {
+        List<CategoryEntity> children = all.stream().filter(categoryEntity -> {
+            return categoryEntity.getParentCid() == root.getCatId();
+        }).map(categoryEntity -> {
+            //1、找到子菜单
+            categoryEntity.setChildren(getChildrens(categoryEntity,all));
+            return categoryEntity;
+        }).sorted((menu1,menu2)->{
+            //2、菜单的排序
+            return (menu1.getSort()==null?0:menu1.getSort()) - (menu2.getSort()==null?0:menu2.getSort());
+        }).collect(Collectors.toList());
+
+        return children;
+    }
+/*    private void buildTree(List<CategoryEntity> list,List<CategoryEntity> parentCategories){
+
+       *//* for (CategoryEntity category : parentCategories) {
             // 使用Java流过滤出当前分类的子分类
             List<CategoryEntity> childCategories = list.stream()
                     .filter(node -> node.getParentCid() == category.getCatId())
@@ -69,16 +93,16 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
             // 设置子分类
             category.setChild(childCategories);
-        }*/
+        }*//*
         for (CategoryEntity category : parentCategories){
-/*            if (category.getName().equals("全新整车")){
+*//*            if (category.getName().equals("全新整车")){
                 System.out.println();
-            }*/
+            }*//*
             List<CategoryEntity> temp = new LinkedList<>();
             for (CategoryEntity node : list){
-/*                if (node.getName().equals("中型车")){
+*//*                if (node.getName().equals("中型车")){
                     System.out.println();
-                }*/
+                }*//*
                 //if (node.getParentCid() == category.getCatId()){
                 if (node.getParentCid().equals(category.getCatId())){
                     temp.add(node);
@@ -89,5 +113,5 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
             buildTree(list,temp);
 
         }
-    }
+    }*/
 }

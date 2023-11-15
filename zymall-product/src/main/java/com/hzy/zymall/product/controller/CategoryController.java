@@ -4,10 +4,7 @@ import com.hzy.common.utils.R;
 import com.hzy.zymall.product.entity.CategoryEntity;
 import com.hzy.zymall.product.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +44,8 @@ public class CategoryController {
     public R info(@PathVariable("catId") Long catId){
 		CategoryEntity category = categoryService.getById(catId);
 
-        return R.ok().put("category", category);
+        // return R.ok().put("category", category);
+        return R.ok().put("data", category);
     }
 
     /**
@@ -73,13 +71,18 @@ public class CategoryController {
     }
 
     /**
-     * 删除
+     * 删除 @RequestBody获取请求体
      */
-    @RequestMapping("/delete")
-    
+    @PostMapping("/delete")
     public R delete(@RequestBody Long[] catIds){
 		categoryService.removeByIds(Arrays.asList(catIds));
 
+        return R.ok();
+    }
+
+    @RequestMapping("/update/sort")
+    public R updateSort(@RequestBody CategoryEntity[] category){
+        categoryService.updateBatchById(Arrays.asList(category));
         return R.ok();
     }
 
