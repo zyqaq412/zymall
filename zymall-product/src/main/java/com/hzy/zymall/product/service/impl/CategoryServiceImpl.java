@@ -10,9 +10,9 @@ import com.hzy.zymall.product.entity.CategoryEntity;
 import com.hzy.zymall.product.service.CategoryService;
 import org.springframework.stereotype.Service;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @Service("categoryService")
@@ -30,7 +30,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
     @Override
     public List<CategoryEntity> listWithTree() {
-        List<CategoryEntity> list = this.list();
+/*        List<CategoryEntity> list = this.list();
 
         // 使用Java流过滤出顶级分类
         List<CategoryEntity> topLevelCategories = list.stream()
@@ -38,27 +38,27 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
                 .collect(Collectors.toList());
 
         // 构建树形结构
-        buildTree(list, topLevelCategories);
+        buildTree(list, topLevelCategories);*/
 
 
-/*        // 1.查出所有分类
+        // 1.查出所有分类
         List<CategoryEntity> list = this.list();
         // 2.构建树形结构
-        List<CategoryEntity> ans = new LinkedList<>();
+        List<CategoryEntity> topLevelCategories = new LinkedList<>();
         // 2.1找出顶级分类
         for (CategoryEntity category : list){
             if (category.getParentCid() == 0){
-                ans.add(category);
+                topLevelCategories.add(category);
             }
         }
         // 2.2构建树形结构
-        buildTree(list,ans);*/
+        buildTree(list,topLevelCategories);
 
         return topLevelCategories;
     }
     private void buildTree(List<CategoryEntity> list,List<CategoryEntity> parentCategories){
 
-        for (CategoryEntity category : parentCategories) {
+       /* for (CategoryEntity category : parentCategories) {
             // 使用Java流过滤出当前分类的子分类
             List<CategoryEntity> childCategories = list.stream()
                     .filter(node -> node.getParentCid() == category.getCatId())
@@ -69,16 +69,25 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryDao, CategoryEntity
 
             // 设置子分类
             category.setChild(childCategories);
-        }
-/*        for (CategoryEntity category : ans){
+        }*/
+        for (CategoryEntity category : parentCategories){
+/*            if (category.getName().equals("全新整车")){
+                System.out.println();
+            }*/
             List<CategoryEntity> temp = new LinkedList<>();
             for (CategoryEntity node : list){
-                if (node.getParentCid() == category.getCatId()){
+/*                if (node.getName().equals("中型车")){
+                    System.out.println();
+                }*/
+                //if (node.getParentCid() == category.getCatId()){
+                if (node.getParentCid().equals(category.getCatId())){
                     temp.add(node);
                 }
             }
+
+            category.setChildren(temp);
             buildTree(list,temp);
-            category.setChild(temp);
-        }*/
+
+        }
     }
 }
